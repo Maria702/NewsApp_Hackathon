@@ -1,18 +1,20 @@
-// ignore_for_file: file_names
-
+// ignore_for_file: file_names, prefer_const_constructors
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
-class WorldNews extends StatefulWidget {
+import 'package:test/MultiScreen/ShowAll.dart';
+
+class TopStories extends StatefulWidget {
   @override
-  _WorldNewsState createState() => _WorldNewsState();
+  _TopStoriesState createState() => _TopStoriesState();
 }
 
-class _WorldNewsState extends State<WorldNews> {
+class _TopStoriesState extends State<TopStories> {
   var Date;
+  var val;
 
   String _title(dynamic source) {
     return source['title'].toString();
@@ -51,27 +53,18 @@ class _WorldNewsState extends State<WorldNews> {
     var vwidth = MediaQuery.of(context).size.width;
     var vhight = MediaQuery.of(context).size.height;
     var dt = DateTime.now();
-    var newFormat = DateFormat("yy-MM-dd");
+    var newFormat = DateFormat("dd-MM-yy");
     String updatedDt = newFormat.format(dt);
     final String apiUrl =
-        'https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=17b872e790924034941aece7d1ab8f6a';
-    // "https://newsapi.org/v2/top-headlines?from=$updatedDt&category=sports&sortBy=publishedAt&pageSize=10&apiKey=279ff2d9334747f980557d5520f7a04f";
-    // "https://newsapi.org/v2/everything?q=tesla&from=2021-08-29&sortBy=publishedAt&apiKey=279ff2d9334747f980557d5520f7a04f";
-    // Top headlines from TechCrunch right now
-    // "https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=279ff2d9334747f980557d5520f7a04f";
-
+        'https://newsapi.org/v2/top-headlines?country=us&apiKey=17b872e790924034941aece7d1ab8f6a';
     Future<List<dynamic>> fetchUsers() async {
       var result = await http.get(Uri.parse(apiUrl));
-      // print("================================================");
-      // print(json.decode(result.body)["articles"]);
+
       return json.decode(result.body)["articles"];
     }
 
-    print(updatedDt); // 20-04-03
-    // var addDt = DateTime.now();
-    // print(addDt.add(Duration(days: 5, hours: 5, minutes: 30)));
-    // var subDt = DateTime.now().subtract(Duration(days: 10, hours: 10));
-    // print(addDt.isBefore(subDt)); // tr
+    print(updatedDt);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -84,25 +77,29 @@ class _WorldNewsState extends State<WorldNews> {
                 children: List.generate(snapshot.data.length, (index) {
                   return GestureDetector(
                     onTap: () {
-                      // Navigator.push(
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => ShowAllNews(val =
+                                  snapshot.data[index]))); // Navigator.push(
                       //   context,
-                      // MaterialPageRoute(
-                      //   builder: (context) => LiveScreen(
-                      //     img: "${snapshot.data[index]['urlToImage']}",
-                      //     titel: _title(snapshot.data[index]),
-                      //     description: _description(snapshot.data[index]),
-                      //     time: _time(snapshot.data[index]),
-                      //     content: _content(snapshot.data[index]),
-                      //     id: _id(snapshot.data[index]),
-                      //     name: _name(snapshot.data[index]),
-                      //     url: _url(snapshot.data[index]),
-                      //     author: _author(snapshot.data[index]),
-                      //   ),
-                      // ),
+                      //   // MaterialPageRoute(
+                      //   //   builder: (context) => ShowAllNews(
+                      //   //       // img: "${snapshot.data[index]['urlToImage']}",
+                      //   //       // titel: _title(snapshot.data[index]),
+                      //   //       // description: _description(snapshot.data[index]),
+                      //   //       // time: _time(snapshot.data[index]),
+                      //   //       // content: _content(snapshot.data[index]),
+                      //   //       // id: _id(snapshot.data[index]),
+                      //   //       // name: _name(snapshot.data[index]),
+                      //   //       // url: _url(snapshot.data[index]),
+                      //   //       // author: _author(snapshot.data[index]),
+                      //   //       ),
+                      //   // ),
                       // );
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
                       child: Column(
                         children: [
                           Container(
@@ -125,14 +122,6 @@ class _WorldNewsState extends State<WorldNews> {
                                   fontWeight: FontWeight.bold, fontSize: 14),
                             ),
                           ),
-                          // Padding(
-                          //   padding: const EdgeInsets.all(1.0),
-                          //   child: Text(
-                          //     _description(snapshot.data[index]),
-                          //     overflow: TextOverflow.ellipsis,
-                          //       maxLines: 3,
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),

@@ -1,4 +1,9 @@
+// // ignore_for_file: file_names, prefer_const_literals_to_create_immutables
+
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, annotate_overrides, file_names
+
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'home.dart';
 
@@ -8,6 +13,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  @override
   void initState() {
     super.initState();
     Timer(
@@ -16,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
             context, MaterialPageRoute(builder: (context) => HomeScreen())));
   }
 
-  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -29,7 +34,9 @@ class _SplashScreenState extends State<SplashScreen> {
         ],
       )),
       child: Stack(
+        // ignore: prefer_const_literals_to_create_immutables
         children: [
+          // ignore: prefer_const_constructors
           Center(
             child: CircleAvatar(
               radius: 80,

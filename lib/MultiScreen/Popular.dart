@@ -1,11 +1,11 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, prefer_const_declarations
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:test/MultiScreen/ShowAll.dart';
 import 'dart:convert';
-import 'dart:html';
 
 class PopularScreen extends StatefulWidget {
   @override
@@ -14,6 +14,7 @@ class PopularScreen extends StatefulWidget {
 
 class _PopularScreenState extends State<PopularScreen> {
   var Date;
+  var val;
 
   String _title(dynamic source) {
     return source['title'].toString();
@@ -68,6 +69,9 @@ class _PopularScreenState extends State<PopularScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        appBar: AppBar(
+          title: Text("Popular News"),
+        ),
         body: FutureBuilder<List<dynamic>>(
           future: fetchUsers(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -77,25 +81,14 @@ class _PopularScreenState extends State<PopularScreen> {
                 children: List.generate(snapshot.data.length, (index) {
                   return GestureDetector(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      // MaterialPageRoute(
-                      //   builder: (context) => LiveScreen(
-                      //     img: "${snapshot.data[index]['urlToImage']}",
-                      //     titel: _title(snapshot.data[index]),
-                      //     description: _description(snapshot.data[index]),
-                      //     time: _time(snapshot.data[index]),
-                      //     content: _content(snapshot.data[index]),
-                      //     id: _id(snapshot.data[index]),
-                      //     name: _name(snapshot.data[index]),
-                      //     url: _url(snapshot.data[index]),
-                      //     author: _author(snapshot.data[index]),
-                      //   ),
-                      // ),
-                      // );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  ShowAllNews(val = snapshot.data[index])));
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
                       child: Column(
                         children: [
                           Container(

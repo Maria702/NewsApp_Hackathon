@@ -1,13 +1,16 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:test/home.dart';
-import 'package:test/login.dart';
-import 'package:test/signUp.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:test/AuthenScreen/favScreen.dart';
+import 'package:test/AuthenScreen/login.dart';
+import 'package:test/AuthenScreen/signUp.dart';
 
 class LoginScreen extends StatelessWidget {
+  void main() {
+    WidgetsFlutterBinding.ensureInitialized();
+  }
+
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,7 @@ class LoginScreen extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Favirote',
+            title: 'Login',
             theme: ThemeData(
               primarySwatch: Colors.red,
               visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -32,7 +35,7 @@ class LoginScreen extends StatelessWidget {
             routes: {
               "/login": (content) => Login(),
               "/SignUp": (content) => SignUp(),
-              "/home": (content) => HomeScreen(),
+              "/home": (content) => FaviroteScreen(),
             },
           );
         }

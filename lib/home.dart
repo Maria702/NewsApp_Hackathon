@@ -1,12 +1,13 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_new
+// ignore_for_file: prefer_const_constructors, unnecessary_new, prefer_const_literals_to_create_immutables
 
-import 'dart:html';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:test/Multicreen.dart/WorldNews.dart';
-import 'package:test/loginScreen.dart';
-import 'Multicreen.dart/MyNews.dart';
-import 'Multicreen.dart/Popular.dart';
-import 'Multicreen.dart/TopStories.dart';
+import 'package:test/AuthenScreen/profileScreen.dart';
+import 'package:test/MultiScreen/MyNews.dart';
+import 'package:test/MultiScreen/Popular.dart';
+import 'package:test/MultiScreen/TopStories.dart';
+import 'package:test/MultiScreen/WorldNews.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,13 +15,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // void _navigateToNextScreen(BuildContext context) {
-  //   Navigator.of(context)
-  //       .push(MaterialPageRoute(builder: (context) => DrawerScreen()));
-  // }
+  FirebaseFirestore db = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
+    var currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      print(currentUser.email);
+      print(currentUser.providerData);
+    }
+    @override
+    Future<void> initState() async {
+      super.initState();
+      DocumentSnapshot snapshot =
+          await db.collection('users').doc(currentUser!.uid).get();
+    }
+
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: DefaultTabController(
@@ -37,56 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 backgroundColor: Colors.red.shade900,
-                // automaticallyImplyLeading: false,
-
-                // leading: Container(
-
-                //     child: Drawer(
-                //   child: ListView(
-                //     children: [
-                //       DrawerHeader(
-                //         child: Text('Drawer Header'),
-                //         decoration: BoxDecoration(
-                //           color: Colors.blue,
-                //         ),
-                //       ),
-                //       ListTile(
-                //         title: Text('Item 1'),
-                //         onTap: () {
-                //           // Update the state of the app
-                //           // ...
-                //           // Then close the drawer
-                //           Navigator.pop(context);
-                //         },
-                //       )
-                //     ],
-                //   ),
-                // )
-
-                // child: IconButton(
-                //   onPressed: () => {
-                //     Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //             builder: (BuildContext context) =>
-                //                 DrawerScreen()))
-                //   },
-                //   icon: new Icon(Icons.menu),
-                // ),
-                // ),
-                // leading: GestureDetector(
-                //   onTap: () {
-                //     // Navigator.pop(
-                //     //   context,
-                //     //   MaterialPageRoute(
-                //     //     builder: (context) => Drawer(),
-                //     //   ),
-                //     // );
-                //   },
-                //   child: Icon(
-                //     Icons.menu,
-                //   ),
-                // ),
                 actions: <Widget>[
                   Container(
                     child: Padding(
@@ -99,43 +60,48 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         )),
                   ),
-                  Container(
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 20.0),
-                      child: IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        LoginScreen()));
-                          },
-                          icon: new Icon(Icons.person_rounded)),
-                    ),
-                  ),
+
+// // ***********************PopupMenuItem**************************
+
                   Padding(
                     padding: EdgeInsets.only(right: 20.0),
                     child: PopupMenuButton(
-                        itemBuilder: (context) => [
-                              PopupMenuItem(
-                                child: Text("Settungs"),
-                                value: 1,
-                              ),
-                              PopupMenuItem(
-                                child: Text("Help"),
-                                value: 2,
-                              ),
-                              PopupMenuItem(
-                                child: Text("Contact Us"),
-                                value: 3,
-                              ),
-                              PopupMenuItem(
-                                child: Text("Other BBC apps"),
-                                value: 4,
-                              ),
-                            ]),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: Text("Profile"),
+                          value: 1,
+                        ),
+                        PopupMenuItem(
+                          child: Text("Settungs"),
+                          value: 2,
+                        ),
+                        PopupMenuItem(
+                          child: Text("Help"),
+                          value: 3,
+                        ),
+                        PopupMenuItem(
+                          child: Text("Contact Us"),
+                          value: 4,
+                        ),
+                        PopupMenuItem(
+                          child: Text("Other BBC apps"),
+                          value: 5,
+                        ),
+                      ],
+                      onSelected: (int menu) {
+                        if (menu == 1) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfileScreen()));
+                        } else if (menu == 2) {}
+                      },
+                    ),
                   )
                 ],
+
+// // *****************BOTTOM TABBAR******************************
+
                 bottom: TabBar(
                     isScrollable: true,
                     unselectedLabelColor: Colors.white30,
@@ -192,44 +158,84 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ]),
               ),
-              drawer: Theme(
-                data: Theme.of(context).copyWith(
-                  canvasColor: Colors.black,
+
+// // ********************* bottomNavigationBar***********************
+
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+
+              bottomNavigationBar: BottomAppBar(
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 70),
+                      child: Text(
+                        "Powered By @MARIA",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                child: Drawer(
-                    child: ListView(
-                        padding: EdgeInsets.only(top: 3),
-                        children: <Widget>[
-                      ListTile(
-                        title: Text('Top News',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white)),
-                        onTap: () {},
-                      ),
-                      ListTile(
-                        title: Text('World News',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white)),
-                        onTap: () {},
-                      ),
-                      ListTile(
-                        title: Text('My News',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white)),
-                        onTap: () {},
-                      ),
-                      ListTile(
-                        title: Text('Popular News',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white)),
-                        onTap: () {},
-                      ),
-                    ])),
+                color: Colors.red.shade900,
               ),
+
+// // *********************DRAWER****************************
+              drawer: Theme(
+                  data: Theme.of(context).copyWith(
+                    canvasColor: Colors.black,
+                  ),
+                  child: Drawer(
+                    child: ListView(
+                      children: <Widget>[
+                        new UserAccountsDrawerHeader(
+                            accountName: Text(""),
+                            accountEmail: new Text("${currentUser!.email}"),
+                            currentAccountPicture: new CircleAvatar(
+                              backgroundColor: Colors.black,
+                            )),
+                        new ListTile(
+                            title: Text(
+                              "Top News",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(new MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      new TopStories()));
+                            }),
+                        new ListTile(
+                            title: Text("world News",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(new MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      WorldNews()));
+                            }),
+                        new ListTile(
+                            title: Text("POPULAR  News",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(new MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      PopularScreen()));
+                            }),
+                      ],
+                    ),
+                  )),
               body: TabBarView(
                 children: [
                   TopStories(),

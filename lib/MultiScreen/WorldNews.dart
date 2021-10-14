@@ -1,17 +1,20 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, prefer_const_declarations
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:test/MultiScreen/ShowAll.dart';
 import 'dart:convert';
 
-class TopStories extends StatefulWidget {
+class WorldNews extends StatefulWidget {
   @override
-  _TopStoriesState createState() => _TopStoriesState();
+  _WorldNewsState createState() => _WorldNewsState();
 }
 
-class _TopStoriesState extends State<TopStories> {
+class _WorldNewsState extends State<WorldNews> {
   var Date;
+  var val;
 
   String _title(dynamic source) {
     return source['title'].toString();
@@ -53,14 +56,16 @@ class _TopStoriesState extends State<TopStories> {
     var newFormat = DateFormat("yy-MM-dd");
     String updatedDt = newFormat.format(dt);
     final String apiUrl =
-        'https://newsapi.org/v2/top-headlines?country=us&apiKey=17b872e790924034941aece7d1ab8f6a';
+        'https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=17b872e790924034941aece7d1ab8f6a';
+
     Future<List<dynamic>> fetchUsers() async {
       var result = await http.get(Uri.parse(apiUrl));
+      // print("================================================");
 
       return json.decode(result.body)["articles"];
     }
 
-    print(updatedDt);
+    print(updatedDt); // 20-04-03
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -74,25 +79,14 @@ class _TopStoriesState extends State<TopStories> {
                 children: List.generate(snapshot.data.length, (index) {
                   return GestureDetector(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   // MaterialPageRoute(
-                      //   //   builder: (context) => ShowAllNews(
-                      //   //       // img: "${snapshot.data[index]['urlToImage']}",
-                      //   //       // titel: _title(snapshot.data[index]),
-                      //   //       // description: _description(snapshot.data[index]),
-                      //   //       // time: _time(snapshot.data[index]),
-                      //   //       // content: _content(snapshot.data[index]),
-                      //   //       // id: _id(snapshot.data[index]),
-                      //   //       // name: _name(snapshot.data[index]),
-                      //   //       // url: _url(snapshot.data[index]),
-                      //   //       // author: _author(snapshot.data[index]),
-                      //   //       ),
-                      //   // ),
-                      // );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  ShowAllNews(val = snapshot.data[index])));
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
                       child: Column(
                         children: [
                           Container(
